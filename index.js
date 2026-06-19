@@ -1,24 +1,25 @@
 const express = require('express');
 const app = express();
 
-// ✅ Middleware works perfectly here
+// Middleware 1 - Logger
 app.use((req, res, next) => {
   console.log(`[${req.method}] ${req.path}`);
   next();
 });
 
-// ✅ Fixed: Properly closed this middleware block and moved next() outside the if statement
+// Middleware 2 - Method Checker
 app.use((req, res, next) => {
-    if (req.method !== 'GET') {
-        console.log('non get request');
-    }
-    next(); 
-}); 
+  if (req.method !== 'GET') {
+    console.log('non get request');
+  }
+  next();
+});
 
+// Routes
 app.post('/', (req, res) => {
   console.log('detail submitted');
   res.send('Form submitted!');
-}); 
+});
 
 // 404 Catch-all
 app.use((req, res) => {
