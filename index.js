@@ -1,42 +1,30 @@
-const http = require('http');
+const express = require('express');
+const app = express();
 
-const server = http.createServer((req, res) => {
-  if (req.url === '/'){
-    res.writeHead(200,{'Content-type': 'text/plain'});
-    res.end('Welcome Home');
-  } else if (req.url === '/about'){
-    res.writeHead(200,{'content-type': 'text/plain'});
-    res.end('this is the about page');
-  } else {
-    res.writeHead(404,{'content-type': 'text/plain'});
-    res.end('404 Not Found')
-  }
+// ✅ Middleware works perfectly here
+app.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.path}`);
+  next();
 });
 
-server.listen(3000, () => {
+// ✅ Fixed: Properly closed this middleware block and moved next() outside the if statement
+app.use((req, res, next) => {
+    if (req.method !== 'GET') {
+        console.log('non get request');
+    }
+    next(); 
+}); 
+
+app.post('/', (req, res) => {
+  console.log('detail submitted');
+  res.send('Form submitted!');
+}); 
+
+// 404 Catch-all
+app.use((req, res) => {
+  res.status(404).send('404 Not Found');
+});
+
+app.listen(3000, () => {
   console.log('Server running at http://localhost:3000');
 });
-
-
-
-// const http = require('http');
-
-// // Change { writeHead, end } to just res
-// const server = http.createServer((req, res) => {
-//     console.log('--- url---');
-//     console.log(req.url);
-
-//     console.log('---Method---');
-//     console.log(req.method);
-
-//     console.log('---Headers---');
-//     console.log(req.headers);
-
-//     // Call the methods directly from the res object
-//     res.writeHead(200, { 'Content-Type': 'text/plain' });
-//     res.end('Check your terminal to see the logs!');
-// });
-
-// server.listen(3000, () => {
-//     console.log('Server is running on http://localhost:3000');
-// });
