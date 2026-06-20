@@ -15,6 +15,16 @@ app.use((req, res, next) => {
   next();
 });
 
+//Error handling
+app.use((err,req,res,next)=>{
+  console.error(err.stack);
+
+  res.status(err.status || 500).json({
+    success:false,
+    message:err.message||'INTERNAL SERVER ERROR'
+  });
+});
+
 // Routes
 app.post('/', (req, res) => {
   console.log('detail submitted');
